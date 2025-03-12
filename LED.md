@@ -4,17 +4,71 @@
 ## 1.实现LED1闪烁
 
 ### 创建项目
-  
+```
   1.在电脑磁盘中创建`LED`文件夹  
   2.在IAR Embedding Worchbench中点击`Project`->`Create New Project`，选择以创建的`LED`文件夹  
   3.在IAR Embedding Worchbench中点击`File`->`New`->`File`，创建`main.c` `LED.c` `LED.h`  
   4.在IAR Embedding Worchbench中右击`LED - Debug`->`Add`， 把创建的三个文件加到项目的workspace中  
   5.在IAR Embedding Worchbench中右击`LED - Debug`->`Options`->`Debug`， Driver选择Texas instruments, 选中Overide default, 点击ok  
-
+```
 ### 编写代码
 
+复制以下代码到文件中  
 
-  
+main.c:
+```
+#include "LED.h"
+
+void main(void)
+{
+  Led_Init();
+  while(1)
+  {
+    LED1_Off();
+    Delay(10);
+    LED1_On();
+    Delay(10);
+  }
+}
+
+```
+
+LED.c:
+```
+#include <ioCC2530.h>
+#include "LED.h"
+
+void Led_Init(void)
+{
+  P1SEL &= ~(1<<0);
+  P1DIR |=  (1<<0);
+  LED1 = 0;
+}
+
+void Delay(unsigned int time)
+{
+  unsigned int i,j;
+  for(i = 0; i<time; i++)
+    for(j = 0; j < 10000; j++);
+}
+
+```
+
+LED.h:
+```
+#include <ioCC2530.h>         
+
+#define LED1 P1_0             
+#define LED1_On() LED1=1;
+#define LED1_Off() LED1=0;
+
+extern void Led_Init(void);
+extern void Delay(unsigned int time);
+
+```
+### 编译并烧录
+
+
 
   
 -------------------------------------------------------------------------------------------------------------------
